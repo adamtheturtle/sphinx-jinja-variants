@@ -8,10 +8,10 @@ from sphinx.application import Sphinx
 from sphinx.util.docutils import SphinxDirective
 from sphinx.util.typing import ExtensionMetadata
 
-from sphinx_source_variants import render_source_variant
+from sphinx_jinja_variants import render_source_variant
 
 extensions = ["sphinx_jinja2", "sphinx_section_include"]
-project = "Source variants example"
+project = "Jinja variants example"
 jinja2_contexts = {
     "installation": {
         "platform": "Default",

@@ -1946,7 +1946,7 @@ wheels = [
 ]
 
 [[package]]
-name = "sphinx-source-variants"
+name = "sphinx-jinja-variants"
 source = { editable = "." }
 dependencies = [
     { name = "docutils" },

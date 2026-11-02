@@ -109,7 +109,7 @@ Configure the trusted publisher and set ``PYPI_PUBLISH_ENABLED`` to ``true`` bef
 
    .. code-block:: shell
 
-      gh workflow run release.yml --repo adamtheturtle/sphinx-source-variants
+      gh workflow run release.yml --repo adamtheturtle/sphinx-jinja-variants
 
    The workflow calculates the next version and requires its changelog file to exist.
    It creates the tag and distributions without pushing a new commit to ``main``.

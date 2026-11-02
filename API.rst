@@ -1,7 +1,7 @@
 Python API
 ==========
 
-Import ``render_source_variant`` from ``sphinx_source_variants``.
+Import ``render_source_variant`` from ``sphinx_jinja_variants``.
 The library provides a Python helper for custom directives.
 Load ``sphinx_jinja2`` and ``sphinx_section_include`` in the consuming project's ``extensions``.
 
@@ -40,6 +40,6 @@ It does not choose variants, generate headings, filter content, or define export
 Example
 -------
 
-The `platform documentation <https://github.com/adamtheturtle/sphinx-source-variants/tree/main/sample/source>`_ defines a custom directive in ``conf.py``.
+The `platform documentation <https://github.com/adamtheturtle/sphinx-jinja-variants/tree/main/sample/source>`_ defines a custom directive in ``conf.py``.
 It renders the same composition for Linux and macOS, retains admonitions, and uses ordinary section includes for references and shared prerequisites.
 No platform vocabulary or presentation policy is built into the library.

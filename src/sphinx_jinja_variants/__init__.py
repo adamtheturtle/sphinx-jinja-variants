@@ -1,4 +1,4 @@
-"""Render an RST composition with a scoped template context and source.
+"""Render RST compositions with scoped Jinja contexts and prepared sources.
 
 Callers choose variants and own presentation, source preparation, and content
 validation. Standard section includes provide copied-target isolation. This
@@ -15,7 +15,7 @@ from sphinx.util.docutils import SphinxDirective
 from sphinx_section_include import resolve_source, section_source
 
 __all__ = ["render_source_variant"]
-__version__ = version(distribution_name="sphinx-source-variants")
+__version__ = version(distribution_name="sphinx-jinja-variants")
 
 _active_sources: ContextVar[tuple[tuple[int, str, Path], ...]] = ContextVar(
     "variant_sources", default=()
