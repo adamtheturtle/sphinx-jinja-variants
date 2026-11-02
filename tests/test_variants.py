@@ -13,7 +13,7 @@ from sphinx.errors import SphinxWarning
 from sphinx.testing.util import SphinxTestApp
 from sphinx.util.docutils import SphinxDirective
 
-from sphinx_source_variants import render_source_variant
+from sphinx_jinja_variants import render_source_variant
 
 
 class PlatformInstructions(SphinxDirective):

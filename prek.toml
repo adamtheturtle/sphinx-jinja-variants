@@ -165,7 +165,7 @@ hooks = [
     id = "pyright-verifytypes",
     name = "pyright-verifytypes",
     stages = ["pre-push"],
-    entry = "uv run --group=dev -m pyright --ignoreexternal --verifytypes sphinx_source_variants",
+    entry = "uv run --group=dev -m pyright --ignoreexternal --verifytypes sphinx_jinja_variants",
     language = "python",
     pass_filenames = false,
     types_or = ["python"],
