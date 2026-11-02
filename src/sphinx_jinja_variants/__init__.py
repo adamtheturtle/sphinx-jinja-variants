@@ -6,13 +6,18 @@ helper does not namespace targets created directly by renderer callbacks.
 """
 
 from collections.abc import Callable, Mapping
+from contextlib import nullcontext
 from contextvars import ContextVar
 from importlib.metadata import version
 from pathlib import Path
 
 from docutils import nodes
 from sphinx.util.docutils import SphinxDirective
-from sphinx_section_include import resolve_source, section_source
+from sphinx_section_include import (
+    prepare_sources,
+    resolve_source,
+    section_source,
+)
 
 __all__ = ["render_source_variant"]
 __version__ = version(distribution_name="sphinx-jinja-variants")
@@ -29,6 +34,7 @@ def render_source_variant(
     context_name: str,
     context: Mapping[str, object],
     render: Callable[[nodes.document], list[nodes.Node]],
+    prepare: Callable[[nodes.document], None] | None = None,
 ) -> list[nodes.Node]:
     """Prepare one source and run a renderer under temporary Jinja values.
 
@@ -42,6 +48,10 @@ def render_source_variant(
     invocation. Sequential variants parse sources afresh, with dependency
     tracking supplied by section_source. Nesting the same source in the same
     consuming document is rejected to avoid reusing another variant's tree.
+
+    A preparation callback runs under these Jinja values for primary and
+    additional section sources, before section selection. When omitted,
+    any surrounding source preparation remains active.
     """
     source_key = (
         id(directive.env),
@@ -59,9 +69,23 @@ def render_source_variant(
             **contexts,
             context_name: {**contexts.get(context_name, {}), **context},
         }
-        with section_source(
-            directive=directive, source=source, docname=directive.env.docname
-        ) as document:
+        preparation = (
+            nullcontext()
+            if prepare is None
+            else prepare_sources(
+                directive=directive,
+                prepare=prepare,
+                docname=directive.env.docname,
+            )
+        )
+        with (
+            preparation,
+            section_source(
+                directive=directive,
+                source=source,
+                docname=directive.env.docname,
+            ) as document,
+        ):
             return render(document)
     finally:
         directive.config.jinja2_contexts = contexts

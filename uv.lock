@@ -1905,47 +1905,6 @@ wheels = [
 ]
 
 [[package]]
-name = "sphinx-jinja2"
-version = "0.0.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "jinja2" },
-    { name = "sphinx", version = "9.1.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
-    { name = "sphinx", version = "9.2.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a2/75/b854df7634e6e417de1272c6be35539dfb6788dbb4f0c2512ecbb70ddcc4/sphinx_jinja2-0.0.1.tar.gz", hash = "sha256:31340bb15225e7455977de19bb029817cba9261db1fbdbc80d227e8c8ada8d4e", size = 13955, upload-time = "2024-02-01T10:30:23.271Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b6/a9/6806dea16899448d42afb8133f3fb5e5b40f6887eeb05065ab6a416accef/sphinx_jinja2-0.0.1-py3-none-any.whl", hash = "sha256:7b4f5d03ff8240201cf620e3df7279689a62c33c1561e5867abcb823e9b4e003", size = 5921, upload-time = "2024-02-01T10:30:21.489Z" },
-]
-
-[[package]]
-name = "sphinx-lint"
-version = "1.0.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "polib" },
-    { name = "regex" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/8a/19/9258497fee6e2a0bdb93e8ecea6ef6864afb5d83e996a1606a853f96c658/sphinx_lint-1.0.2.tar.gz", hash = "sha256:4e7fc12f44f750b0006eaad237d7db9b1d8aba92adda9c838af891654b371d35", size = 36870, upload-time = "2025-11-19T08:28:12.269Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c0/62/f29a2988ff706ac01d3c63d0b4cc4ed62d2c83b447916e0317790ca156cf/sphinx_lint-1.0.2-py3-none-any.whl", hash = "sha256:edcd0fa4d916386c5a3ef7ef0f5136f0bb4a15feefc83c1068ba15bc16eec652", size = 20670, upload-time = "2025-11-19T08:28:10.656Z" },
-]
-
-[[package]]
-name = "sphinx-section-include"
-version = "2026.11.2.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "docutils" },
-    { name = "sphinx", version = "9.1.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
-    { name = "sphinx", version = "9.2.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/83/59/6e3f0c193142f1633adadeb9b0b2607cf8b053c919f619681e0923d128d9/sphinx_section_include-2026.11.2.2.tar.gz", hash = "sha256:b79f203f5a6cfea84d9a7edb1ae383bdec935604256f20c2024f51ad987a58c5", size = 160936, upload-time = "2026-11-02T12:56:11.215Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/4c/28/49cd8467acc157b675729b1d1ecc1aba49f59439edb6396d59fcb543f5db/sphinx_section_include-2026.11.2.2-py3-none-any.whl", hash = "sha256:ffdc3a47f5a460f4106ad6451ab5cc6ab085f56a98851fc22aebac2c130cf2af", size = 10758, upload-time = "2026-11-02T12:56:10.016Z" },
-]
-
-[[package]]
 name = "sphinx-jinja-variants"
 source = { editable = "." }
 dependencies = [
@@ -2005,7 +1964,7 @@ requires-dist = [
     { name = "docutils", specifier = ">=0.21.2" },
     { name = "sphinx", specifier = ">=9.1.1,<10" },
     { name = "sphinx-jinja2", specifier = ">=0.0.1" },
-    { name = "sphinx-section-include", specifier = ">=2026.11.2.2" },
+    { name = "sphinx-section-include", specifier = ">=2026.11.2.4" },
 ]
 
 [package.metadata.requires-dev]
@@ -2050,6 +2009,47 @@ dev = [
 release = [
     { name = "check-wheel-contents", specifier = "==0.6.3" },
     { name = "towncrier", specifier = "==26.9.0" },
+]
+
+[[package]]
+name = "sphinx-jinja2"
+version = "0.0.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jinja2" },
+    { name = "sphinx", version = "9.1.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "sphinx", version = "9.2.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a2/75/b854df7634e6e417de1272c6be35539dfb6788dbb4f0c2512ecbb70ddcc4/sphinx_jinja2-0.0.1.tar.gz", hash = "sha256:31340bb15225e7455977de19bb029817cba9261db1fbdbc80d227e8c8ada8d4e", size = 13955, upload-time = "2024-02-01T10:30:23.271Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b6/a9/6806dea16899448d42afb8133f3fb5e5b40f6887eeb05065ab6a416accef/sphinx_jinja2-0.0.1-py3-none-any.whl", hash = "sha256:7b4f5d03ff8240201cf620e3df7279689a62c33c1561e5867abcb823e9b4e003", size = 5921, upload-time = "2024-02-01T10:30:21.489Z" },
+]
+
+[[package]]
+name = "sphinx-lint"
+version = "1.0.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "polib" },
+    { name = "regex" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8a/19/9258497fee6e2a0bdb93e8ecea6ef6864afb5d83e996a1606a853f96c658/sphinx_lint-1.0.2.tar.gz", hash = "sha256:4e7fc12f44f750b0006eaad237d7db9b1d8aba92adda9c838af891654b371d35", size = 36870, upload-time = "2025-11-19T08:28:12.269Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c0/62/f29a2988ff706ac01d3c63d0b4cc4ed62d2c83b447916e0317790ca156cf/sphinx_lint-1.0.2-py3-none-any.whl", hash = "sha256:edcd0fa4d916386c5a3ef7ef0f5136f0bb4a15feefc83c1068ba15bc16eec652", size = 20670, upload-time = "2025-11-19T08:28:10.656Z" },
+]
+
+[[package]]
+name = "sphinx-section-include"
+version = "2026.11.2.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "docutils" },
+    { name = "sphinx", version = "9.1.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
+    { name = "sphinx", version = "9.2.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ef/d9/6ad672ab5573d6d10214e198b125f159b45572f5625ed7066fe171090f78/sphinx_section_include-2026.11.2.4.tar.gz", hash = "sha256:6ae18e853fd08a063dce3621cd51da8c75a02f4b8410b6fabc46a88abb65bb2b", size = 165061, upload-time = "2026-11-02T20:24:44.037Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e0/14/357c8891796ea0787b42748888642e65b0aff8bd2724d0b0ea97fcc93be2/sphinx_section_include-2026.11.2.4-py3-none-any.whl", hash = "sha256:6b97c0361f754f7151e951a31803dd4f420518d1b31336d6ab5445cafc36a7ff", size = 11281, upload-time = "2026-11-02T20:24:42.628Z" },
 ]
 
 [[package]]
