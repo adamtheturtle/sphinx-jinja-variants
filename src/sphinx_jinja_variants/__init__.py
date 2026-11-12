@@ -20,7 +20,7 @@ from sphinx_section_include import (
 )
 
 __all__ = ["render_source_variant"]
-__version__ = version(distribution_name="sphinx-jinja-variants")
+__version__: str = version(distribution_name="sphinx-jinja-variants")
 
 _active_sources: ContextVar[tuple[tuple[int, str, Path], ...]] = ContextVar(
     "variant_sources", default=()
