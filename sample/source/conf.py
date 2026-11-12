@@ -1,5 +1,8 @@
 """Render installation instructions for two operating systems."""
 
+# Sphinx requires lowercase names for its configuration settings.
+# pylint: disable=invalid-name
+
 from functools import partial
 from typing import override
 
