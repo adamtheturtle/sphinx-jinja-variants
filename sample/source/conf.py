@@ -86,11 +86,11 @@ class _ConfigRegistrar(Protocol):
 
     def add_config_value(
         self,
-        *,
-        name: str,
-        default: object,
-        rebuild: Literal["env"],
-        types: type[object],
+        _name: str,
+        _default: object,
+        _rebuild: Literal["env"],
+        _types: type[object],
+        /,
     ) -> None:
         """Register a dictionary-valued setting."""
         ...
@@ -107,8 +107,6 @@ def _config_registrar(app: object, /) -> _ConfigRegistrar:
 def setup(app: Sphinx) -> ExtensionMetadata:
     """Register this consumer's directive and variant choices."""
     registrar = _config_registrar(app)
-    registrar.add_config_value(
-        name="platform_contexts", default={}, rebuild="env", types=dict
-    )
+    registrar.add_config_value("platform_contexts", {}, "env", dict)
     app.add_directive(name="platform-instructions", cls=PlatformInstructions)
     return {"parallel_read_safe": True, "parallel_write_safe": True}

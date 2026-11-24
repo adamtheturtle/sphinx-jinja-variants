@@ -64,13 +64,18 @@ def render_source_variant(
     if source_key in active:
         message = "Cannot nest variants of the same source in one document"
         raise ValueError(message)
-    contexts = read_contexts(config=directive.config, name="jinja2_contexts")
+    context_setting = "jinja2_contexts"
+    contexts = read_contexts(config=directive.config, name=context_setting)
     token = _active_sources.set((*active, source_key))
     try:
-        directive.config.jinja2_contexts = {
-            **contexts,
-            context_name: {**contexts.get(context_name, {}), **context},
-        }
+        setattr(
+            directive.config,
+            context_setting,
+            {
+                **contexts,
+                context_name: {**contexts.get(context_name, {}), **context},
+            },
+        )
         preparation = (
             nullcontext()
             if prepare is None
@@ -90,5 +95,5 @@ def render_source_variant(
         ):
             return render(document)
     finally:
-        directive.config.jinja2_contexts = contexts
+        setattr(directive.config, context_setting, contexts)
         _active_sources.reset(token)
