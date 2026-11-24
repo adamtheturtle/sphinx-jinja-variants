@@ -515,6 +515,6 @@ def test_invalid_context_configuration() -> None:
     """Reject configuration without a mapping of named contexts."""
     config = Config()
     setting = "jinja2_contexts"
-    setattr(config, setting, ["installation"])
+    config.jinja2_contexts = ["installation"]
     with pytest.raises(expected_exception=TypeError, match="jinja2_contexts"):
         _ = read_contexts(config=config, name=setting)

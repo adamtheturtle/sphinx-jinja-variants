@@ -68,14 +68,10 @@ def render_source_variant(
     contexts = read_contexts(config=directive.config, name=context_setting)
     token = _active_sources.set((*active, source_key))
     try:
-        setattr(
-            directive.config,
-            context_setting,
-            {
-                **contexts,
-                context_name: {**contexts.get(context_name, {}), **context},
-            },
-        )
+        directive.config.jinja2_contexts = {
+            **contexts,
+            context_name: {**contexts.get(context_name, {}), **context},
+        }
         preparation = (
             nullcontext()
             if prepare is None
@@ -95,5 +91,5 @@ def render_source_variant(
         ):
             return render(document)
     finally:
-        setattr(directive.config, context_setting, contexts)
+        directive.config.jinja2_contexts = contexts
         _active_sources.reset(token)
