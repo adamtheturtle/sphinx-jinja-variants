@@ -308,9 +308,6 @@ exclude = [ ".venv" ]
 # Ideally we would limit the paths to the source code where we want to ignore names,
 # but Vulture does not enable this.
 ignore_names = [
-    # Sphinx reads these sample settings by name.
-    "jinja2_contexts",
-    "platform_contexts",
     # Sphinx configuration
     "autoclass_content",
     "autoclass_content",
@@ -332,6 +329,8 @@ ignore_names = [
     "html_title",
     "htmlhelp_basename",
     "intersphinx_mapping",
+    # Sphinx reads these sample settings by name.
+    "jinja2_contexts",
     "language",
     "linkcheck_ignore",
     "linkcheck_retries",
@@ -341,6 +340,7 @@ ignore_names = [
     "nitpicky",
     "option_spec",
     "optional_arguments",
+    "platform_contexts",
     "project",
     "project_copyright",
     "pygments_style",
