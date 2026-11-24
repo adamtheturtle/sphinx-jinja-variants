@@ -4,7 +4,7 @@
 # pylint: disable=invalid-name
 
 from functools import partial
-from typing import override
+from typing import Literal, Protocol, override, runtime_checkable
 
 from docutils import nodes
 from sphinx.application import Sphinx
@@ -12,6 +12,7 @@ from sphinx.util.docutils import SphinxDirective
 from sphinx.util.typing import ExtensionMetadata
 
 from sphinx_jinja_variants import render_source_variant
+from sphinx_jinja_variants._config import read_contexts
 
 extensions = ["sphinx_jinja2", "sphinx_section_include"]
 project = "Jinja variants example"
@@ -51,7 +52,8 @@ class PlatformInstructions(SphinxDirective):
         contexts.
         """
         output: list[nodes.Node] = []
-        for key, context in self.config.platform_contexts.items():
+        contexts = read_contexts(config=self.config, name="platform_contexts")
+        for key, context in contexts.items():
             output.extend(
                 render_source_variant(
                     directive=self,
@@ -78,9 +80,34 @@ class PlatformInstructions(SphinxDirective):
         return [container]
 
 
+@runtime_checkable
+class _ConfigRegistrar(Protocol):
+    """The part of the Sphinx setup API used to register contexts."""
+
+    def add_config_value(
+        self,
+        *,
+        name: str,
+        default: object,
+        rebuild: Literal["env"],
+        types: type[object],
+    ) -> None:
+        """Register a dictionary-valued setting."""
+        ...
+
+
+def _config_registrar(app: object, /) -> _ConfigRegistrar:
+    """Check that the application can register extension settings."""
+    if not isinstance(app, _ConfigRegistrar):
+        msg = "Expected an application that can register Sphinx settings"
+        raise TypeError(msg)
+    return app
+
+
 def setup(app: Sphinx) -> ExtensionMetadata:
     """Register this consumer's directive and variant choices."""
-    app.add_config_value(
+    registrar = _config_registrar(app)
+    registrar.add_config_value(
         name="platform_contexts", default={}, rebuild="env", types=dict
     )
     app.add_directive(name="platform-instructions", cls=PlatformInstructions)

@@ -9,11 +9,13 @@ from typing import override
 import pytest
 from bs4 import BeautifulSoup
 from docutils import nodes
+from sphinx.config import Config
 from sphinx.errors import SphinxWarning
 from sphinx.testing.util import SphinxTestApp
 from sphinx.util.docutils import SphinxDirective
 
 from sphinx_jinja_variants import render_source_variant
+from sphinx_jinja_variants._config import read_contexts
 
 
 class PlatformInstructions(SphinxDirective):
@@ -30,7 +32,8 @@ class PlatformInstructions(SphinxDirective):
         contexts.
         """
         output: list[nodes.Node] = []
-        for key, context in self.config.platform_contexts.items():
+        contexts = read_contexts(config=self.config, name="platform_contexts")
+        for key, context in contexts.items():
             output.extend(
                 render_source_variant(
                     directive=self,
@@ -40,7 +43,7 @@ class PlatformInstructions(SphinxDirective):
                     render=partial(self._render, key=key),
                     prepare=(
                         self._prepare
-                        if self.config.prepare_platform_sources
+                        if self.config["prepare_platform_sources"] is True
                         else None
                     ),
                 )
@@ -51,12 +54,12 @@ class PlatformInstructions(SphinxDirective):
         """Apply this consumer's policy under the active platform
         context.
         """
-        platform = self.config.jinja2_contexts["installation"]["platform"]
+        platform = read_contexts(config=self.config, name="jinja2_contexts")[
+            "installation"
+        ]["platform"]
         for paragraph in document.findall(condition=nodes.paragraph):
             if paragraph.astext().startswith("Preparation target:"):
-                paragraph[:] = [
-                    nodes.Text(data="Prepared for " + platform + ".")
-                ]
+                paragraph[:] = [nodes.Text(data=f"Prepared for {platform}.")]
 
     def _render(
         self, _document: nodes.document, /, *, key: str
@@ -163,10 +166,7 @@ def _assert_platform_content(
     assert "Keep this installation advice." in text
     if prepared:
         expected_preparations = 3
-        assert (
-            text.count("Prepared for " + platform + ".")
-            == expected_preparations
-        )
+        assert text.count(f"Prepared for {platform}.") == expected_preparations
         assert "Preparation target:" not in text
     else:
         assert "Preparation target: primary." in text
@@ -233,12 +233,12 @@ def test_platform_variants_references_dependencies_and_contexts(
         @override
         def run(self) -> list[nodes.Node]:
             """Record the active document and selected platform."""
-            collected.append(
-                (
-                    self.env.docname,
-                    self.config.jinja2_contexts["installation"]["platform"],
-                )
+            contexts = read_contexts(
+                config=self.config, name="jinja2_contexts"
             )
+            platform = contexts["installation"]["platform"]
+            assert isinstance(platform, str)
+            collected.append((self.env.docname, platform))
             return []
 
     config = platform_configuration()
@@ -252,11 +252,11 @@ def test_platform_variants_references_dependencies_and_contexts(
     app.add_directive(name="platform-instructions", cls=PlatformInstructions)
     app.add_directive(name="parse-probe", cls=Probe)
     app.add_directive(name="context-probe", cls=ContextProbe)
-    contexts = app.config.jinja2_contexts
+    contexts = read_contexts(config=app.config, name="jinja2_contexts")
     app.build()
-    assert app.config.jinja2_contexts is contexts
+    assert read_contexts(config=app.config, name="jinja2_contexts") is contexts
     assert (
-        app.config.jinja2_contexts
+        read_contexts(config=app.config, name="jinja2_contexts")
         == platform_configuration()["jinja2_contexts"]
     )
     assert Counter(reads) == Counter({"Linux": 1, "macOS": 1, "Default": 1})
@@ -294,7 +294,7 @@ def test_platform_variants_references_dependencies_and_contexts(
     text = app.env.get_doctree(docname="index").astext()
     assert "Changed shared prerequisite." in text
     assert "Original shared prerequisite." not in text
-    assert app.config.jinja2_contexts is contexts
+    assert read_contexts(config=app.config, name="jinja2_contexts") is contexts
     assert app.warning.getvalue() == ""
 
 
@@ -336,7 +336,9 @@ def test_nested_scopes_and_sequential_recovery(
             """Render nested sources followed by another sequential
             variant.
             """
-            contexts = self.config.jinja2_contexts
+            contexts = read_contexts(
+                config=self.config, name="jinja2_contexts"
+            )
             output = render_source_variant(
                 directive=self,
                 source="outer.rst",
@@ -344,7 +346,10 @@ def test_nested_scopes_and_sequential_recovery(
                 context={"platform": "Outer"},
                 render=self._outer,
             )
-            assert self.config.jinja2_contexts is contexts
+            assert (
+                read_contexts(config=self.config, name="jinja2_contexts")
+                is contexts
+            )
             output.extend(
                 render_source_variant(
                     directive=self,
@@ -354,7 +359,10 @@ def test_nested_scopes_and_sequential_recovery(
                     render=self._record,
                 )
             )
-            assert self.config.jinja2_contexts is contexts
+            assert (
+                read_contexts(config=self.config, name="jinja2_contexts")
+                is contexts
+            )
             return output
 
         @staticmethod
@@ -381,7 +389,9 @@ def test_nested_scopes_and_sequential_recovery(
             preparation.
             """
             assert (
-                self.config.jinja2_contexts["installation"]["platform"]
+                read_contexts(config=self.config, name="jinja2_contexts")[
+                    "installation"
+                ]["platform"]
                 == "Inner"
             )
             if failure == "preparation":
@@ -394,7 +404,9 @@ def test_nested_scopes_and_sequential_recovery(
             inner work.
             """
             _ = self._record(document)
-            contexts = self.config.jinja2_contexts
+            contexts = read_contexts(
+                config=self.config, name="jinja2_contexts"
+            )
             with pytest.raises(
                 expected_exception=ValueError,
                 match="Cannot nest variants of the same source",
@@ -406,7 +418,10 @@ def test_nested_scopes_and_sequential_recovery(
                     context={"platform": "Wrong"},
                     render=self._record,
                 )
-            assert self.config.jinja2_contexts is contexts
+            assert (
+                read_contexts(config=self.config, name="jinja2_contexts")
+                is contexts
+            )
             if failure != "none":
                 with pytest.raises(
                     expected_exception=ValueError,
@@ -429,7 +444,10 @@ def test_nested_scopes_and_sequential_recovery(
                     render=self._inner,
                     prepare=self._prepare_inner,
                 )
-            assert self.config.jinja2_contexts is contexts
+            assert (
+                read_contexts(config=self.config, name="jinja2_contexts")
+                is contexts
+            )
             assert contexts["installation"]["platform"] == "Outer"
             _ = self._record(document)
             return []
@@ -442,7 +460,7 @@ def test_nested_scopes_and_sequential_recovery(
         exception_on_warning=True,
     )
     app.add_directive(name="nested-variants", cls=NestedVariants)
-    contexts = app.config.jinja2_contexts
+    contexts = read_contexts(config=app.config, name="jinja2_contexts")
     app.build()
     assert observations == [
         "Outer source.",
@@ -450,7 +468,7 @@ def test_nested_scopes_and_sequential_recovery(
         "Outer source.",
         "After source.",
     ]
-    assert app.config.jinja2_contexts is contexts
+    assert read_contexts(config=app.config, name="jinja2_contexts") is contexts
     assert app.warning.getvalue() == ""
 
 
@@ -484,10 +502,18 @@ def test_context_restoration_after_failure(
         exception_on_warning=True,
     )
     app.add_directive(name="platform-instructions", cls=PlatformInstructions)
-    contexts = app.config.jinja2_contexts
+    contexts = read_contexts(config=app.config, name="jinja2_contexts")
     with pytest.raises(
         expected_exception=SphinxWarning,
         match="absent.txt" if failure == "source" else "Expected one section",
     ):
         app.build()
-    assert app.config.jinja2_contexts is contexts
+    assert read_contexts(config=app.config, name="jinja2_contexts") is contexts
+
+
+def test_invalid_context_configuration() -> None:
+    """Reject configuration without a mapping of named contexts."""
+    config = Config()
+    config.jinja2_contexts = ["installation"]
+    with pytest.raises(expected_exception=TypeError, match="jinja2_contexts"):
+        _ = read_contexts(config=config, name="jinja2_contexts")

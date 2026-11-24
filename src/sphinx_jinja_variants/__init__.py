@@ -19,6 +19,8 @@ from sphinx_section_include import (
     section_source,
 )
 
+from sphinx_jinja_variants._config import read_contexts
+
 __all__ = ["render_source_variant"]
 __version__: str = version(distribution_name="sphinx-jinja-variants")
 
@@ -62,7 +64,7 @@ def render_source_variant(
     if source_key in active:
         message = "Cannot nest variants of the same source in one document"
         raise ValueError(message)
-    contexts = directive.config.jinja2_contexts
+    contexts = read_contexts(config=directive.config, name="jinja2_contexts")
     token = _active_sources.set((*active, source_key))
     try:
         directive.config.jinja2_contexts = {
