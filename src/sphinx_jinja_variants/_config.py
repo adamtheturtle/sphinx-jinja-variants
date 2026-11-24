@@ -24,7 +24,7 @@ def _is_contexts(value: object, /) -> TypeGuard[Contexts]:
 
 
 def read_contexts(*, config: Config, name: str) -> Contexts:
-    """Return the configuration's mapping without copying it."""
+    """Return the configured mapping without copying it."""
     value: object = config[name]
     if not _is_contexts(value):
         msg = (
